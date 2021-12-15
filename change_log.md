@@ -1,0 +1,33 @@
+# A QTL for Potyvirus resistance in *Arabidopsis thaliana* is consistent with frequency-depednent selection
+
+## 0.1 Initial commit
+
+Set up a clean repository for files that will make it into the manuscript.
+`.Rmd` files currently exist to do this, but the files are cumbersome because
+the GWAS plots are so huge, so save these as .png files and upload those
+instead.
+
+Here is the structure I am aiming for
+
+01_data
+02_library
+03_scripts
+04_main_figures
+    - 01_disease_phenotypes
+    - 02_multitrait_GWA
+    - 03_structural_variants
+    - 04_geographic_distribution
+05_supplementary figures
+    - supplementary_figures.Rmd
+    - S1_conditional_GWA
+    - S2_multitrait_G
+    - S3_multitrait_GxE
+    - S4_kruskall_wallis_GWA
+    - S5_replicate_experiment
+manuscript.docx
+limix.yml
+README.md
+change_log.md
+
+In this commit I added data files, library code and scripts.
+Also copied the README from the old repo and added a line to download the SNP data.
