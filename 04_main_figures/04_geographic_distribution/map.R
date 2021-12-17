@@ -1,0 +1,40 @@
+# Create a map showing the geographic distribution of accessions
+# screened for TuMV resistance, highlighting those showing necrosis in response
+# to either virus, and those showing the susceptible allele.
+
+library('ggplot2')
+library("maps")
+library("mapdata")
+
+source('03_scripts/1001genomes_data.R')
+
+world <- map_data('world')  
+
+map <- ggplot() + 
+  # Plot an empty map of the world
+  # Borders are shown the same colour as the country backgrounds
+  geom_polygon(
+    data=world,
+    aes(x=long, y = lat, group = group),
+    fill="gray95", colour="gray95") + 
+  coord_fixed(
+    xlim = range(g1001$Long, na.rm = TRUE),
+    ylim = range(g1001$Lat, na.rm = TRUE),
+    1.5
+  ) +
+  # Overplot the accessions
+  geom_point(
+    data = g1001,
+    aes(x=Long, y = Lat, colour = type)) +
+  geom_point(
+    data = g1001 %>% filter(type != "Non-necrotic/Resistant allele"),
+    aes(x = Long, y = Lat, colour=type)
+  ) + 
+  # Make it look nice
+  labs(
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_classic() +
+  theme(legend.position = "bottom", legend.title = element_blank())+
+  scale_color_manual(values = c("gray", "#4285f4", "#34a853", "#ea4335"))
