@@ -1,9 +1,39 @@
 #!/bin/python
 
 '''
-Pieter Clauw, with alterations to allow for covariates by Tom Ellis
-
 Script to run GWAS for two traits in limix, accounting for covariates.
+
+Parameters
+==========
+phenotype: str
+    Path to phenotype file. CSV file with accession ID in first column,
+    phenotype values in subsequent columns. Filename is used as phenotype name.
+genotype: str
+    Path to genotype directory. This directory should contain boht the SNP and
+    kinship matrix as HDF5 files. Versions are the same as used for PyGWAS.
+maf: float
+    Specify the minor allele frequecny cut-off. Default is set to 0.05
+outDir: str
+    Specify the output directory. All results will be saved in this directory.
+covariates: str
+    Path to matrix of covariates
+
+Returns
+=======
+CSV files summarising associations with the phenotype at each marker for common
+effects (G), trait-spefic effects (GxE) and combined effects (G+GxE), plus 
+Manhattan plots of each these files.
+
+Example
+=======
+An example of using this script to look for associations with resistance to two
+viral isolates of Turnip mosaic virus can be found here:
+
+https://github.com/ellisztamas/tumv_ms/tree/main/04_main_figures/02_multitrait_GWA
+
+Authors
+=======
+Pieter Clauw, with alterations to allow for covariates by Tom Ellis
 '''
 
 import pandas as pd

@@ -11,7 +11,7 @@ if(!dir.exists(output_dir)) dir.create(output_dir)
 
 # Necrosis, as defined in the 1050 accessions
 # i.e. scored as 1 if *any* plant showed necrosis
-read_delim("001_data/001_raw_data/replicate_experiment.csv", delim=";") %>% 
+read_delim("01_data/replicate_experiment.csv", delim=";") %>% 
   filter(Accession != "Col-0") %>% 
   select(Accession, Virus, per_nec_infected) %>% 
   pivot_wider(names_from = Virus, values_from = per_nec_infected) %>% 

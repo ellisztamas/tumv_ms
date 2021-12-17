@@ -1,7 +1,37 @@
 #!/bin/python
 
 '''
+Script to run GWAS for two traits in limix, accounting for covariates.
 
+Parameters
+==========
+phenotype: str
+    Path to phenotype file. CSV file with accession ID in first column,
+    phenotype values in subsequent columns. Filename is used as phenotype name.
+genotype: str
+    Path to genotype directory. This directory should contain boht the SNP and
+    kinship matrix as HDF5 files. Versions are the same as used for PyGWAS.
+maf: float
+    Specify the minor allele frequecny cut-off. Default is set to 0.05
+outDir: str
+    Specify the output directory. All results will be saved in this directory.
+
+Returns
+=======
+CSV files summarising associations with the phenotype at each marker for common
+effects (G), trait-spefic effects (GxE) and combined effects (G+GxE), plus 
+Manhattan plots of each these files.
+
+Example
+=======
+An example of using this script to look for associations with resistance to two
+viral isolates of Turnip mosaic virus can be found here:
+
+https://github.com/ellisztamas/tumv_ms/tree/main/05_supplementary_figureskruskall-wallis_GWA
+
+Authors
+=======
+Pieter Clauw, with alterations by Tom Ellis
 '''
 
 
@@ -37,7 +67,7 @@ pheno.index = pheno.index.map(lambda x: str(x).encode('UTF8'))
 acnNrInitial = len(pheno.index)
 
 # Genotype (G)
-genoFile = f'{args.genotype}/all_chromosomes_binary.hdf5'
+genoFile = f'{args.genotype}/imputed_snps_binary.hdf5'
 
 geno_hdf = h5py.File(genoFile, 'r')
 
@@ -64,7 +94,7 @@ print(f'{len(SNP_indices)} SNPs had a minor allele frequency higher than {args.m
 G = G.transpose()
 
 # Kinship (K)
-kinFile = f'{args.genotype}/kinship_ibs_binary_mac5.h5py'
+kinFile = f'{args.genotype}/kinship_ibs_mac5.hdf5'
 kin_hdf = h5py.File(kinFile, 'r')
 # select kinship only for phenotyped and genotyped accessions
 acn_indices = [np.where(kin_hdf['accessions'][:] == acn)[0][0] for acn in pheno.index]
