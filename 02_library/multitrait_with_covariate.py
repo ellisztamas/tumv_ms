@@ -47,7 +47,7 @@ pheno.index = pheno.index.map(lambda x: str(x).encode('UTF8'))
 acnNrInitial = len(pheno.index)
 
 # Genotype (G)
-genoFile = f'{args.genotype}/all_chromosomes_binary.hdf5'
+genoFile = f'{args.genotype}/imputed_snps_binary.hdf5'
 
 geno_hdf = h5py.File(genoFile, 'r')
 
@@ -74,7 +74,7 @@ print(f'{len(SNP_indices)} SNPs had a minor allele frequency higher than {args.m
 G = G.transpose()
 
 # Kinship (K)
-kinFile = f'{args.genotype}/kinship_ibs_binary_mac5.h5py'
+kinFile = f'{args.genotype}/kinship_ibs_mac5.hdf5'
 kin_hdf = h5py.File(kinFile, 'r')
 # select kinship only for phenotyped and genotyped accessions
 acn_indices = [np.where(kin_hdf['accessions'][:] == acn)[0][0] for acn in pheno.index]

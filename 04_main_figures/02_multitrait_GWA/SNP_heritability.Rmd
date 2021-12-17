@@ -1,0 +1,125 @@
+---
+title: "Plot SNP heritability"
+author: "Tom Ellis"
+date: "5/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(sommer)
+
+library(reticulate)
+use_condaenv('limix', required=TRUE)
+```
+
+```{r import phenotypes}
+# Import phenotype data
+source("03_scripts/1001genomes_data.R")
+# Add a column giving cohort as a factor
+g1001 <- g1001 %>% 
+  left_join(
+    read_csv("01_data/cohort_as_factor.csv", col_types = 'cf'), by = 'code'
+  )
+```
+
+```{python kinship-matrix}
+# Import and subset the kinship matrix to correspond to only the accessions in the phenotype file.
+# The heavy lifting is done with python via the reticulate package
+
+import pandas as pd
+import numpy as np
+import h5py
+
+# Kinship file
+kinFile = '01_data/1001_SNP_MATRIX/kinship_ibs_mac5.hdf5'
+kin_hdf = h5py.File(kinFile, 'r')
+# select kinship only for phenotyped and genotyped accessions
+# Accession names first need converting to byte format to be compatible with HDF5 files
+bcodes = r.g1001['code'].map(lambda x: str(x).encode('UTF8'))
+acn_indices = [np.where(kin_hdf['accessions'][:] == acn)[0][0] for acn in bcodes]
+acn_indices.sort()
+K = kin_hdf['kinship'][acn_indices, :][:, acn_indices]
+kin_hdf.close()
+
+```
+
+
+```{r}
+# Convert the Python K matrix into an R object
+K <- py$K
+colnames(K) <- rownames(K) <- g1001$code
+
+# Variance decomposition of the kinship matrix, accounting for cohort as a cofactor.
+# A function to calculate:
+# 1. 'full' SNP heritability (h2_full),
+# 2. variance explained by the top SNP (geno) and 
+# 3. residual SNP heritability when the top snp is accounted for (h2_mixed)
+variance_components <- function(trait){
+  # Regress phenotypes on the kinship matrix only
+  m1 <- mmer(
+    formula( paste(trait, " ~ cohort")),
+    random= ~ vs(code, Gu = K),
+    rcov=~units,
+    data=g1001,verbose = FALSE)
+  # Regress phenotypes on kinship matrix plus the genotype at the top SNP
+  m2 <- mmer(
+    formula( paste(trait, " ~ cohort")),
+    random=~ vs(genotype) + vs(code, Gu = K),
+    rcov=~units,
+    data=g1001,verbose = FALSE)
+  # Create a dataframe showing variance explained for each component
+  cbind(
+    trait = trait,
+    component = c('h2_full', 'geno', 'h2_partial'),
+    rbind(
+      vpredict(m1, h2_full   ~ (V1) / ( V1+V2) ),
+      vpredict(m2, geno ~ (V1) / ( V1+V2+V3) ),
+      vpredict(m2, h2_mixed   ~ (V2) / ( V1+V2+V3) )
+    )
+  )
+}
+
+# Apply the function to each trait
+vexp <- lapply(
+  c("AUDPS_Anc_21", "AUDPS_Evo_21", "SYM_Anc", "SYM_Evo",
+    "Infectivity_Anc_21", "Infectivity_Evo_21", "Necrosis_Anc", "Necrosis_Evo"), 
+  variance_components
+)
+vexp <- do.call('rbind', vexp)
+
+write_csv(vexp, file = "04_main_figures/02_multitrait_GWA/pseudoheritabiliy.csv")
+```
+
+```{r plot-pseudoheritability}
+
+# Create the plot for pseudoheritability
+
+pd <- position_dodge(0.2)
+
+pseudoheritability <- vexp %>% 
+  filter(component != 'geno') %>% 
+  mutate(
+    Virus = ifelse(grepl("*Anc*", trait), "TuMV-Anc", "TuMV-Evo"),
+    `Top SNP` = ifelse(component == "h2_full", "Without", "With"),
+    trait = str_extract(trait, "^[^_]+"),
+    trait = ifelse(trait == "SYM", "Symptoms", trait)
+  ) %>% 
+  ggplot(aes(x = trait, y = Estimate, group=paste(Virus, component), colour = Virus, shape = `Top SNP`)) +
+  geom_point(position = pd) +
+  # geom_col() + 
+  geom_errorbar(aes(
+    ymin = Estimate - SE,
+    ymax =  Estimate + SE
+  ),
+  position = pd, width = 0.1) +
+  labs(
+    x = "Trait",
+    y = "SNP heritability"
+  ) +
+  theme(legend.position = "top") +
+  theme_classic()
+```
+
