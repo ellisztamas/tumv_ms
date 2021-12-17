@@ -1,10 +1,18 @@
 # A QTL for Potyvirus resistance in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
-# 0.3 Code to create the map
+## 0.5 Supplementary figures
+
+Added code to create supplementary figures to `05_supplementary_figures`. Added code to run the multitrait GWA conditioned on the top necrosis SNP and the replciate dataset, plus an Rmarkdown file to create the figures.
+
+## 0.4 Code for figure 1
+
+Added code for figure 1, icnluding a readme.
+
+## 0.3 Code to create the map
 
 Commit of code to create figure 4, including a README file.
 
-# 0.2 Multitrait GWA results
+## 0.2 Multitrait GWA results
 
 Commit of code to create figure 2. Added a README to that subfolder, and modified
 the Limix script to accommodate new SNP file names.
