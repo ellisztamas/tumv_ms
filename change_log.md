@@ -1,5 +1,13 @@
 # A QTL for Potyvirus resistance in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
+## 0.7 Filled out README
+
+Filled out project README. Added `session_info.txt` giving R package versions.
+
+## 0.6 Kruskall-Walli GWA
+
+Added files to run the Kruskall-Wallis GWA. Also added doc strings to the GWA scripts in `02_library`.
+
 ## 0.5 Supplementary figures
 
 Added code to create supplementary figures to `05_supplementary_figures`. Added code to run the multitrait GWA conditioned on the top necrosis SNP and the replciate dataset, plus an Rmarkdown file to create the figures.
