@@ -3,6 +3,8 @@
 #' Created by modifying the tutorial by Daniel Roelfs
 #' https://danielroelfs.com/blog/how-i-create-manhattan-plots-using-ggplot/
 
+library(tidyverse)
+
 # Function to create the Manhattan plot
 source("02_library/manhattan_plot.R")
 
@@ -22,7 +24,7 @@ necrosis_manh <- manh_necrosis +
     ggplotGrob(qq),
     xmin = 119144518 / 2,
     xmax = 119144518,
-    ymin = 10, ymax = 21
+    ymin = 8, ymax = 20
   )
 
 # Create a zoom-in on the 100kb around the strong GWAS peak
@@ -32,35 +34,35 @@ cds <- data.frame(
   start = c(5921880, 5925118, 5933929, 5936371, 5951822, 5960108, 5976801),
   stop  = c(5923151, 5929902, 5932382, 5934482, 5953155, 5953939, 5976252)
 )
-# Plot P-values for the region, annotated with coding sequeneces from TAIR 10
-zoomed_manh <- limix_necrosis %>% 
-  filter(chr == 2, pos >= 5900000, pos <= 6000000) %>% 
-  ggplot(aes(x = pos, y = -log10(pvalue))) +
-  geom_point(color ="#377eb8") +
-  geom_hline(
-    yintercept = -log10(0.05 / nrow(limix_necrosis)),
-    color = "grey40", linetype = "dashed"
-  ) + 
-  theme_classic() +
-  labs(
-    x = "Position (bp)", 
-    y = "-log<sub>10</sub>(p)"
-  ) + 
-  annotate(
-    'segment', x  = cds$start, xend = cds$stop, y = 21 + 1:nrow(cds), yend = 21  + 1:nrow(cds),
-    colour = "black", size = 1,
-    arrow = arrow(
-      type = "closed", length = unit(0.1, "inches")
-    )
-  ) +
-  annotate(
-    'text', label = cds$locus,
-    x  = apply(cds[, 2:3], 1, min),
-    y = 21 + 1:nrow(cds),
-    hjust = 1.2,
-    size = 3
-  ) +
-  theme( 
-    legend.position = "none",
-    axis.title.y = element_markdown()
-  )
+# # Plot P-values for the region, annotated with coding sequeneces from TAIR 10
+# zoomed_manh <- limix_necrosis %>% 
+#   filter(chr == 2, pos >= 5900000, pos <= 6000000) %>% 
+#   ggplot(aes(x = pos, y = -log10(pvalue))) +
+#   geom_point(color ="#377eb8") +
+#   geom_hline(
+#     yintercept = -log10(0.05 / nrow(limix_necrosis)),
+#     color = "grey40", linetype = "dashed"
+#   ) + 
+#   theme_classic() +
+#   labs(
+#     x = "Position (bp)", 
+#     y = "-log<sub>10</sub>(p)"
+#   ) + 
+#   annotate(
+#     'segment', x  = cds$start, xend = cds$stop, y = 21 + 1:nrow(cds), yend = 21  + 1:nrow(cds),
+#     colour = "black", size = 1,
+#     arrow = arrow(
+#       type = "closed", length = unit(0.1, "inches")
+#     )
+#   ) +
+#   annotate(
+#     'text', label = cds$locus,
+#     x  = apply(cds[, 2:3], 1, min),
+#     y = 21 + 1:nrow(cds),
+#     hjust = 1.2,
+#     size = 3
+#   ) +
+#   theme( 
+#     legend.position = "none",
+#     axis.title.y = element_markdown()
+#   )

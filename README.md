@@ -5,11 +5,8 @@ A collaboration with Santiago Elena’s group at the University of Valencia inve
 ## Table of contents
 
 1. [Experimental set up](#experimental-set-up)
-	1. [Screening](#screening)
-	2. [Phenotypes](#phenotypes)
-	3. [Analysis](#analysis)
 3. [Data files](#data-files)
-4. [Dependencies](#dependencies)
+4. [Analysis](#analysis)
 5. [Author information](#author-information)
 
 
@@ -28,8 +25,7 @@ Plants were monitored for 21 days after inocculation and phenotyped for the foll
 1. **AUDUPS**: The area under the disease progression stairs (a measure of both the speed and severity of infection)
 2. **Infectivity**: proportion of infected plants per number of inoculated plants
 3. **Necrosis** binary trait; 0 meant no necrosis and 1 necrosis. For the initial phenotyping screen 1 indicates necrosis in *any* individual of an accession; in the replicate experiment they scored necrosis on each plant individually.
-4. **Resistance** binary trait; 0 meant none of the plants showed symptoms of infection and 1 obvious symptoms of infection in at least one plant.
-5. **Symptomatology** a semi-quantitative scale ranging from 0 - 5:
+4. **Symptomatology** a semi-quantitative scale ranging from 0 - 5:
     0. no symptoms or healthy plant
     1. mild symptoms without chlorosis
     2. chlorosis is visible
@@ -37,20 +33,7 @@ Plants were monitored for 21 days after inocculation and phenotyped for the foll
     4. strong chlorotic symptoms and beginning of necrosis
     5. clear necrosis and death of the plant.
 
-#### Analysis
-
-Various analyses on the data were carried out by Tom Ellis. These are detailled in the folder `005_results/`. Each subfolder of that directory contains a markdown file `result_summary.md`, which is a markdown file listing what the folder was meant to investigate, and what the conclusion was.
-
 ## Data files
-
-### Phenotypes
-
-Raw data on phenotypes are found at `/groups/nordborg/raw.data/athaliana/phenotypes/tumv_resistance/`, but are linked to from `001_data/001_raw_data` inside the project folder.
-
-There are two phenotype files, with an accompanying README: 
-
-1. `GWAS_virus_fixed.csv`: Disease symptoms in 1050 accessions from the first screen
-2. `replicate_experiment.csv` Disease symptoms in 118 accessions fom the second screen.
 
 ### Genotype data
 
@@ -61,9 +44,27 @@ Download and extract them to `01_data/1001_SNP_MATRIX` by running the following 
 wget -c https://1001genomes.org/data/GMI-MPI/releases/v3.1/SNP_matrix_imputed_hdf5/1001_SNP_MATRIX.tar.gz -O - | tar -xz -C 01_data/
 ```
 
-## Dependencies
+### Phenotypes
 
-### Genome-wide associations
+Aside from genotype files, there are six additional data files in `01_data`:
+
+1. `phenotypes_1050_accessions.csv`: Disease symptoms in 1050 accessions from the first screen
+2. `replicate_experiment.csv`: Disease symptoms in 118 accessions in a replicate screen.
+3. `the1001genomes_accessions.csv`: Accession information from the 1001 Genomes database.
+4. `cohort_as_dummy.txt`: Text file indicating experimental cohort as four columns of dummy variables.
+5. `cohort_as_factor.csv`: Cohort information, but as a single column.
+6. `chr2_5923326.csv`: SNP genotype of each accession at the SNP showing the strongest association with necrosis
+
+## Analysis
+
+Code to create the main and supplementary figures are given in the folder `04_main_figures` and `05_supplementary_figures`.
+Each analysis has its own README file giving more information.
+
+### Dependencies
+
+Analysis were run on the GMI high-performance cluster. As such, dependencies may be somewhat idiosyncratic, but I have done my best to make the results reproducible on other machines.
+
+#### Genome-wide associations
 
 GWA is done using the Python package *Limix*. A [conda](https://docs.conda.io/en/latest/) environment file `limix.yml` is provided to recapitulate dependencies. Assuming conda is installed on your machine, install the environment with
 ```
@@ -74,14 +75,25 @@ Activate it before running analyses with
 conda activate limix
 ```
 
-### R
+#### R
 
-Formatting phenotypes is done in R using the `tidyverse` bundle of packages. Maps are plotted using `maps` and `mapdata`, and rendered in `ggplot2`.
+This project uses R 4.0.3 with the following packages:
 
-This project uses `renv` to ensure package versions match between machines. Open the project file `virus_resistance.Rproj` in the root directory of this project into RStudio (it won't work through the terminal!) and run `renv::refresh()`, and `renv` should automatically set up a local environment with the same package versions as were used to create the results. See the very good documentation on `renv` for more: https://rstudio.github.io/renv/articles/renv.html.
+- The `tidyverse` bundle of packages, including `ggplot2`
+- `ggtext`
+- `grid`
+- `magick`. On Ubuntu at least, this depends on the Linux library `librsvg2-dev`, which is best installed outside of R via apt.
+- `cowplot`
+- `ggpubr`
+- `reshape2`
+- `maps` and `mapsdata`
+- `geosphere` 
+- `patchwork`
+
+Full package versions are given in `session_info.txt` (this is the output of `devtools::session_info()`).
 
 ## Author information
 
-* Principle investigator: Santiago Elena (University of Valencia)
-* Data collection performed by Anamarija Butkovic Ruben Gonzales and others in Valencia
-* Analyses run at GMI by Tom Ellis and Benjamin Jaegle.
+* Principle investigators: Santiago Elena (University of Valencia), Magnus Nordborg (Gregor Mendel Institute, Vienna)
+* Data collection performed by Anamarija Butković Rubén González and others in Valencia
+* Analyses with PacBio genomes were performed by Benjamin Jaegle; all other analyses were by Tom Ellis.

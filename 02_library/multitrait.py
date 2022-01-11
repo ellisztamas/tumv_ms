@@ -15,8 +15,6 @@ maf: float
     Specify the minor allele frequecny cut-off. Default is set to 0.05
 outDir: str
     Specify the output directory. All results will be saved in this directory.
-covariates: str
-    Path to matrix of covariates
 
 Returns
 =======
@@ -29,18 +27,19 @@ Example
 An example of using this script to look for associations with resistance to two
 viral isolates of Turnip mosaic virus can be found here:
 
-https://github.com/ellisztamas/tumv_ms/tree/main/04_main_figures/02_multitrait_GWA
+https://github.com/ellisztamas/tumv_ms/tree/main/05_supplementary_figureskruskall-wallis_GWA
 
 Authors
 =======
-Pieter Clauw, with alterations to allow for covariates by Tom Ellis
+Pieter Clauw, with alterations by Tom Ellis
 '''
 
+
+from limix.qtl import scan
 import pandas as pd
 import numpy as np
 import h5py
 from bisect import bisect
-from limix.qtl import scan
 from limix import plot
 import random
 from sklearn.decomposition import PCA
@@ -51,27 +50,18 @@ import os
 
 # Parameters
 parser = argparse.ArgumentParser(description = 'Parse parameters for multilocus GWAS')
-parser.add_argument('-p', '--phenotype', help = 'Path to phenotype file. CSV file with accession ID in first column, phenotype values in subsequent columns. Filename is used as phenotype name.', required = True)
+parser.add_argument('-p', '--phenotype', help = 'Path to phenotype file. CSV file with accession ID in forst column, phenptype values in second column. Filename is used as phenotype name.', required = True)
 parser.add_argument('-g', '--genotype', help = 'Path to genotype directory.This directory should contain boht the SNP and kinship matrix. Versions are the same as used for PyGWAS.', required = True)
 parser.add_argument('-m', '--maf', help = 'Specify the minor allele frequecny cut-off. Default is set to 0.05', default = 0.05)
 parser.add_argument('-o', '--outDir', help = 'Specify the output directory. All results will be saved in this directory.', required = True)
-parser.add_argument('-c', '--covariates', help = 'Path to matrix of covariates', required=True)
 args = parser.parse_args()
-
-# Covariates (M)
-covars = pd.read_csv(args.covariates, index_col = 0)
-# TODO: test if limix can handle NAs. if so, make this optional
-# remove NA values
-covars = covars.dropna(axis = 0, how = 'any')
-# enocde covars.index to UTF8, for complemetarity with SNP matrix accessions
-covars.index = covars.index.map(lambda x: str(x).encode('UTF8'))
 
 # Phenotype (Y)
 pheno = pd.read_csv(args.phenotype, index_col = 0)
 traits =  pheno.columns.values
 # TODO: test if limix can handle NAs. if so, make this optional
 # remove NA values
-pheno = pheno.dropna(axis = 0, how = 'any')
+pheno = pheno.dropna(axis = 0, how = 'any') 
 # enocde pheno.index to UTF8, for complemetarity with SNP matrix accessions
 pheno.index = pheno.index.map(lambda x: str(x).encode('UTF8'))
 acnNrInitial = len(pheno.index)
@@ -117,14 +107,13 @@ pheno = pheno.loc[acn_order]
 Y = pheno.to_numpy()
 
 
-
 ### MTMM TESTS ###
 A = np.matrix('0 1; 1 0')
-A0 = np.ones((len(traits), 1))
+A0 = np.ones((len(traits), 1)) 
 A1 = np.eye(len(traits))
-# M = np.repeat(1, Y.shape[0])
+# M = np.repeat(1, Y.shape[0]) 
 
-r = scan(G, Y, K = K, A = A, A0 = A0, A1 = A1, M=covars, verbose = False)
+r = scan(G, Y, K = K, lik = 'normal', A = A, A0 = A0, A1 = A1, verbose = True)
 
 
 
@@ -155,9 +144,9 @@ for pv in ['pv10', 'pv20', 'pv21']:
     # plot results
     # Manhattan plot
     gwas_pv = gwas_results[['chrom', 'pos', pv]]
-    gwas_pv.columns = ['chrom', 'pos', 'pv']
+    gwas_pv.columns = ['chrom', 'pos', 'pv'] 
     plot.manhattan(gwas_pv)
-    plt = plot.get_pyplot()
+    plt = plot.get_pyplot() 
     plt.savefig(f"{args.outDir}/manhattanPlot_{'_'.join(traits)}_{args.maf}_{test}.png")
     plt.close()
 
@@ -175,4 +164,5 @@ for pv in ['pv10', 'pv20', 'pv21']:
     gwas_pv.columns.values[0] = 'chr'
     gwas_pv.columns.values[2] = 'pvalue'
     gwas_pv.to_csv(f"{args.outDir}/{'_'.join(traits)}_{args.maf}_MTMM_{test}.csv", index = False)
+
 

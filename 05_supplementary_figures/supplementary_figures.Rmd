@@ -1,0 +1,153 @@
+---
+title: "Supplementary figures"
+# author: "Tom Ellis"
+date: ""
+output:
+  bookdown::pdf_book:
+    toc: no
+    keep_tex: no
+    number_sections: false
+    latex_engine: lualatex
+  bookdown::word_document2: null
+---
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{table}{0}
+\renewcommand{\theequation}{S\arabic{equation}}
+\setcounter{equation}{0}
+
+This document contains supplementary figures to accompany the manuscript "A major virus-resistance QTL in *Arabidopsis thaliana* is consistent with negative frequency-dependent selection".
+
+```{r supp-setup}
+knitr::opts_chunk$set(
+  echo = FALSE, cache=T, cache.lazy=T,
+  fig.width=16.9/2.54, fig.height = 10/2.54, fig.align='center',
+  warning = F, message =F,
+  dev = "png"
+)
+
+library(tidyverse)
+source("02_library/manhattan_plot.R")
+```
+
+(ref:conditional-gwas) Manhattan plots for the association between SNPs and necrosis including the SNP at Chr:5,923,326 as a cofactor. Results are shown for (A) common effects in response to both viral isolates and (B) virus-specific responses.
+
+```{r conditional-gwas, fig.cap="(ref:conditional-gwas)"}
+
+path <- "05_supplementary_figures/GWA_condition_on_top_SNP/output/"
+conditional_gwas <- list(
+  g = read_csv(
+    paste(path, "Necrosis_Evo_Necrosis_Anc_0.1_MTMM_G.csv", sep = ""),
+    col_types = 'ciddid'
+  ),
+  gxe = read_csv(
+    paste(path, "Necrosis_Evo_Necrosis_Anc_0.1_MTMM_GxE.csv", sep = ""),
+    col_types = 'ciddid'
+  )
+)
+
+
+ggpubr::ggarrange(
+  manhattan_plot(conditional_gwas$g) +
+    ggtitle("Common effects") +
+    lims(y = c(0, 6e-5)),
+  manhattan_plot(conditional_gwas$gxe) + 
+    ggtitle("Virus-specific effects") +
+    lims(y = c(0, 3e-8)),
+  ncol= 2, labels = "AUTO"
+)
+
+```
+
+(ref:g-manh) Manhattan plots for associations with common disease responses to both viral isolates.
+
+```{r g-manh, fig.cap="(ref:g-manh)", fig.height=20/2.54}
+# Import files for G results
+limix_path <- "04_main_figures/02_multitrait_GWA/output/"
+limix_files <- list.files(limix_path, "*_G.csv")
+limix_files <-paste(limix_path, limix_files, sep ="")
+
+limix_G <- lapply(limix_files, read_csv, col_types = 'ciddid')
+names(limix_G) <- c("audps", "inf", "necrosis", "sym")
+
+ggpubr::ggarrange(
+  manhattan_plot(limix_G$audps) + ggtitle("AUDPS"),
+  manhattan_plot(limix_G$inf)   + ggtitle("Infectivity"),
+  manhattan_plot(limix_G$sym)   + ggtitle("Severity of symptoms"),
+  manhattan_plot(limix_G$necrosis) + ggtitle("Necrosis"),
+  nrow=2, ncol= 2, labels = "AUTO"
+)
+
+```
+
+(ref:gxe-manh) Manhattan plots for associations with disease responses specific to individual viral isolates.
+
+```{r gxe-manh, fig.cap="(ref:gxe-manh)", fig.height=20/2.54}
+
+# Import files for GxE results
+limix_path <- "04_main_figures/02_multitrait_GWA/output/"
+limix_files <- list.files(limix_path, "*_GxE.csv")
+limix_files <-paste(limix_path, limix_files, sep ="")
+
+limix_GxE <- lapply(limix_files, read_csv, col_types = 'ciddid')
+names(limix_GxE) <- c("audps", "inf", "necrosis", "sym")
+
+
+ggpubr::ggarrange(
+  manhattan_plot(limix_GxE$audps) + ggtitle("AUDPS"),
+  manhattan_plot(limix_GxE$inf) + ggtitle("Infectivity"),
+  manhattan_plot(limix_GxE$sym) + ggtitle("Severity of symptoms"),
+  manhattan_plot(limix_GxE$necrosis) + ggtitle("Necrosis"),
+  nrow=2, ncol= 2, labels = "AUTO"
+)
+
+```
+
+
+(ref:replicate-expt) Manhattan plots for the association between SNPs and necrosis in the replicate dataset of 118 accessions.
+
+```{r replicate-expt, fig.cap="(ref:replicate-expt)", fig.width=16.9/2.54, fig.height=10/2.54}
+path <- "05_supplementary_figures/replicate_dataset/output/all_snps/"
+read_csv(
+    paste(path, "binary_necrosis_anc_binary_necrosis_evo_0.1_MTMM_G.csv", sep = ""),
+    col_types = 'ciddid'
+  ) %>% 
+  manhattan_plot()
+
+```
+
+(ref:kruskal-wallis) Manhattan plots for the association between SNPs and necrosis using a Kruskall-Wallis test at each locus, with no correction for population structure.
+
+```{r kruskal-wallis, fig.cap="(ref:kruskal-wallis)", eval=F}
+
+path <- "005_results/017_kruskall-wallis_gwas/output/"
+
+# kw_anc <- read_csv_chunked(
+#   paste(path, "ancestral.csv", sep = ""),
+#   callback = DataFrameCallback$new(function(x, pos) subset(x, maf > 0.1)),
+#   col_types = 'ciddid',
+#   progress = F) %>% 
+#   manhattan_plot() +
+#     ggtitle("TuMV-Anc")
+
+
+kw_evo <- read_csv_chunked(
+  paste(path, "evolved.csv", sep = ""),
+  callback = DataFrameCallback$new(function(x, pos) subset(x, maf > 0.1)),
+  col_types = 'ciddid',
+  progress = F) %>%
+  manhattan_plot() +
+    ggtitle("TuMV-Evo")
+
+
+# ggpubr::ggarrange(
+#   kw_anc, kw_evo,
+#   ncol= 2, labels = "AUTO"
+# )
+
+
+
+
+```
+
