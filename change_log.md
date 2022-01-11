@@ -1,5 +1,16 @@
 # A major virus-resistance association in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
+## 0.9 edits to figure 4
+
+Changed fig 4 to be just a made with a table.
+Colours in the table reflect colours on the map.
+
+##0.8 Edits to Figures 1 and 2
+    
+Removed scale from figure 1, and arranged remaining figures horizontally.
+Removed zoomed in manhattan plot from figure 2.
+Other minor tweaks to each.
+
 ## 0.7 Filled out README
 
 Filled out project README. Added `session_info.txt` giving R package versions.

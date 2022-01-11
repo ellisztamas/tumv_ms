@@ -10,7 +10,12 @@ source('03_scripts/1001genomes_data.R')
 
 world <- map_data('world')  
 
-map <- ggplot() + 
+# Reorder factors so that "Alive/Resistant" comes last.
+# Necessary so that other factors can be overplotted
+g1001 <- g1001 %>% 
+  mutate(type = fct_relevel(type, "Alive/Resistant", after = Inf))
+
+map_plot <- ggplot() +
   # Plot an empty map of the world
   # Borders are shown the same colour as the country backgrounds
   geom_polygon(
@@ -27,7 +32,7 @@ map <- ggplot() +
     data = g1001,
     aes(x=Long, y = Lat, colour = type)) +
   geom_point(
-    data = g1001 %>% filter(type != "Non-necrotic/Resistant allele"),
+    data = g1001 %>% filter(type != "Alive/Resistant"),
     aes(x = Long, y = Lat, colour=type)
   ) + 
   # Make it look nice
@@ -35,6 +40,16 @@ map <- ggplot() +
     x = "Longitude",
     y = "Latitude"
   ) +
-  theme_classic() +
-  theme(legend.position = "bottom", legend.title = element_blank())+
-  scale_color_manual(values = c("gray", "#4285f4", "#34a853", "#ea4335"))
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    legend.title = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+    )+
+  scale_color_manual(values = c("#4285f4", "#34a853", "#ea4335", "gray"))
