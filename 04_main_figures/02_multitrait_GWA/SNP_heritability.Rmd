@@ -90,36 +90,5 @@ vexp <- lapply(
 )
 vexp <- do.call('rbind', vexp)
 
-write_csv(vexp, file = "04_main_figures/02_multitrait_GWA/pseudoheritabiliy.csv")
+write_csv(vexp, file = "04_main_figures/02_multitrait_GWA/output/pseudoheritabiliy.csv")
 ```
-
-```{r plot-pseudoheritability}
-
-# Create the plot for pseudoheritability
-
-pd <- position_dodge(0.2)
-
-pseudoheritability <- vexp %>% 
-  filter(component != 'geno') %>% 
-  mutate(
-    Virus = ifelse(grepl("*Anc*", trait), "TuMV-Anc", "TuMV-Evo"),
-    `Top SNP` = ifelse(component == "h2_full", "Without", "With"),
-    trait = str_extract(trait, "^[^_]+"),
-    trait = ifelse(trait == "SYM", "Symptoms", trait)
-  ) %>% 
-  ggplot(aes(x = trait, y = Estimate, group=paste(Virus, component), colour = Virus, shape = `Top SNP`)) +
-  geom_point(position = pd) +
-  # geom_col() + 
-  geom_errorbar(aes(
-    ymin = Estimate - SE,
-    ymax =  Estimate + SE
-  ),
-  position = pd, width = 0.1) +
-  labs(
-    x = "Trait",
-    y = "SNP heritability"
-  ) +
-  theme(legend.position = "top") +
-  theme_classic()
-```
-
