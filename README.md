@@ -44,6 +44,12 @@ Download and extract them to `01_data/1001_SNP_MATRIX` by running the following 
 wget -c https://1001genomes.org/data/GMI-MPI/releases/v3.1/SNP_matrix_imputed_hdf5/1001_SNP_MATRIX.tar.gz -O - | tar -xz -C 01_data/
 ```
 
+PyGWAS requires specific file names for the input files which don't match the default names from this link. Rename the SNP matrix with:
+
+```
+mv 01_data/1001_SNP_MATRIX/imputed_snps_binary.hdf5 01_data/1001_SNP_MATRIX/all_chromosomes_binary.hdf5
+```
+
 ### Phenotypes
 
 Aside from genotype files, there are six additional data files in `01_data`:

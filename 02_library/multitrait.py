@@ -67,7 +67,7 @@ pheno.index = pheno.index.map(lambda x: str(x).encode('UTF8'))
 acnNrInitial = len(pheno.index)
 
 # Genotype (G)
-genoFile = f'{args.genotype}/imputed_snps_binary.hdf5'
+genoFile = f'{args.genotype}/all_chromosomes_binary.hdf5'
 
 geno_hdf = h5py.File(genoFile, 'r')
 
