@@ -18,7 +18,7 @@ export PYTHONPATH=$PYTHONPATH:./02_library/
 
 # DATA #
 branch=GWA_condition_on_top_SNP # don't forget to change the log destination as well!
-GENO=./01_data/1001_SNP_MATRIX
+GENO=./01_data/1001_SNP_MATRIX/
 DIR=./05_supplementary_figures/${branch}
 # Mapping script
 MTMM=./02_library/multitrait_with_covariate.py

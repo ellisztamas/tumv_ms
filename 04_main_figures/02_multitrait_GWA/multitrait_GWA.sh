@@ -4,7 +4,7 @@
 #SBATCH --mem=40GB
 #SBATCH --output=./04_main_figures/02_multitrait_GWA/log
 #SBATCH --qos=medium
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --array=0-3
 
 # ENVIRONMENT #
@@ -40,5 +40,5 @@ srun python $MTMM \
 --phenotype ${FILES[$SLURM_ARRAY_TASK_ID]} \
 --genotype $GENO \
 --covariates $COV \
---maf 0.1 \
+--maf 0.03 \
 --outDir $OUT

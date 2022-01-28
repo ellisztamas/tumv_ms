@@ -17,7 +17,7 @@ output:
 \renewcommand{\theequation}{S\arabic{equation}}
 \setcounter{equation}{0}
 
-This document contains supplementary figures to accompany the manuscript "A major virus-resistance QTL in *Arabidopsis thaliana* is consistent with negative frequency-dependent selection".
+This document contains supplementary figures to accompany the manuscript "A major virus-resistance association in *Arabidopsis thaliana* is consistent with negative frequency-dependent selection".
 
 ```{r supp-setup}
 knitr::opts_chunk$set(
