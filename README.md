@@ -2,11 +2,14 @@
 
 A collaboration with Santiago Elena’s group at the University of Valencia investigating the genetic basis of resistance to turnip-mosaic virus in *Arabidopsis thaliana* as part of Anamarija Butkovic's PhD project.
 
+Code to run each analysis is given in `04_analyses`. Each analysis has its own README file giving more information.
+Code to stitch those results into figures is given in `05_figures`.
+
 ## Table of contents
 
 1. [Experimental set up](#experimental-set-up)
 3. [Data files](#data-files)
-4. [Analysis](#analysis)
+4. [Dependencies](#dependencies)
 5. [Author information](#author-information)
 
 
@@ -61,16 +64,11 @@ Aside from genotype files, there are six additional data files in `01_data`:
 5. `cohort_as_factor.csv`: Cohort information, but as a single column.
 6. `chr2_5923326.csv`: SNP genotype of each accession at the SNP showing the strongest association with necrosis
 
-## Analysis
-
-Code to create the main and supplementary figures are given in the folder `04_main_figures` and `05_supplementary_figures`.
-Each analysis has its own README file giving more information.
-
-### Dependencies
+## Dependencies
 
 Analysis were run on the GMI high-performance cluster. As such, dependencies may be somewhat idiosyncratic, but I have done my best to make the results reproducible on other machines.
 
-#### Genome-wide associations
+### Genome-wide associations
 
 GWA is done using the Python package *Limix*. A [conda](https://docs.conda.io/en/latest/) environment file `limix.yml` is provided to recapitulate dependencies. Assuming conda is installed on your machine, install the environment with
 ```
@@ -81,7 +79,7 @@ Activate it before running analyses with
 conda activate limix
 ```
 
-#### R
+### R
 
 This project uses R 4.0.3 with the following packages:
 

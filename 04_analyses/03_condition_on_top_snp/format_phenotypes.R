@@ -32,7 +32,7 @@ necrosis <- virus %>%
 # Merge files on cohort and genotype at the top SNP to create a single covariate file.
 read_csv("01_data/cohort_as_dummy.txt", col_types = 'ciiii') %>% 
   left_join(
-    read_csv("01_data/chr2_5923326.csv", col_types = 'ci'),
+    read_csv("01_data/top_snp.csv", col_types = 'ci'),
     by = 'code'
     ) %>% 
   write.csv(file = paste(output_dir, 'covariates.txt', sep=""), row.names = FALSE)

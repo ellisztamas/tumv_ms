@@ -1,5 +1,39 @@
 # A major virus-resistance association in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
+## 0.10 Split up analyses from figures
+
+I have new results that suggest I need to move what were supplementary results 
+to main results. To facilitate that I am rearranging the folder form being 
+organised by main and supplementary figures (with folders `04_main_figures` and
+`05_supplementary_figures`), to splitting code to run all the analyses from code
+ to create figures.
+
+I created `03_scripts/ top_snp.py` to create a datafile for the genotypes at
+Chr2:5927469 in `01_data`. To do this, I also added `02_library/snp_2_hdf5.py`
+as a library function to do this.
+
+Here is the structure I want to create after that:
+
+- 04_analyses
+    - 01_snp_heritability
+    - 02_multitrait_GWA
+    - 03_GWA_condition_on_top_SNP
+    - 04_replicate_dataset
+    - 05_gene_expression
+    - 06_structural_variants
+    - 07_geographic_distribution
+- 05_figures
+    - fig1
+    - fig2
+    - fig3
+    - fig4
+    - supplementary_materials
+
+In this commit I moved files to where they need to go and went through the
+results 1, 2, 3, 4 and 7 to make sure they run.
+
+I still need to add results 05 and 06, and go through the figures.
+
 ## 0.9 edits to figure 4
 
 Changed fig 4 to be just a made with a table.

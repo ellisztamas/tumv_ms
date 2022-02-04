@@ -90,5 +90,5 @@ vexp <- lapply(
 )
 vexp <- do.call('rbind', vexp)
 
-write_csv(vexp, file = "04_main_figures/02_multitrait_GWA/output/pseudoheritabiliy.csv")
+write_csv(vexp, file = "04_analyses/01_snp_heritability/snp_heritability.csv")
 ```

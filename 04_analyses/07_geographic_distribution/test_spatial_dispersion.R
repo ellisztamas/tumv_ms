@@ -1,3 +1,11 @@
+#' Script to test whether pairs of necrotic accessions, or those with the
+#' susceptible allele at Chr2:5927469 are more or less spatially distributed 
+#' than would be expected by chance. This is done by comparing to the same 
+#' numbers of pairs of accessions chosen at random.
+#' 
+#' Tom Ellis
+
+
 library('tidyverse')
 library("geosphere")
 
@@ -5,7 +13,7 @@ source('03_scripts/1001genomes_data.R')
 
 # Matrix of pairwise distances between all accessions.
 dmat <- g1001 %>% 
-  select(Long, Lat) %>% 
+  dplyr::select(Long, Lat) %>% 
   distm() / 1000
 
 # Median distances between observed accessions

@@ -2,10 +2,9 @@
 
 # SLURM
 #SBATCH --mem=40GB
-#SBATCH --output=./04_main_figures/02_multitrait_GWA/log
+#SBATCH --output=./04_analyses/03_condition_on_top_snp/log
 #SBATCH --qos=medium
-#SBATCH --time=24:00:00
-#SBATCH --array=0-3
+#SBATCH --time=12:00:00
 
 # ENVIRONMENT #
 module load build-env/2020
@@ -17,27 +16,27 @@ conda activate limix
 export PYTHONPATH=$PYTHONPATH:./02_library/
 
 # DATA #
-branch=02_multitrait_GWA # don't forget to change the log destination as well!
-GENO=./01_data/1001_SNP_MATRIX
-DIR=./04_main_figures/${branch}
+branch=03_condition_on_top_snp # don't forget to change the log destination as well!
+GENO=./01_data/1001_SNP_MATRIX/
+DIR=./04_analyses/${branch}
 # Mapping script
 MTMM=./02_library/multitrait_with_covariate.py
 
+# Get the genotype at the most stongly associated SNP
+python .03_scripts/top_snp.py
 # format phenotypes
-echo "Formatting phenotypes.\n"
 Rscript ${DIR}/format_phenotypes.R
 FILES=(${DIR}/phenotypes/*.csv)
-# Create covariate file with SNP to condition on.
-COV=./01_data/cohort_as_dummy.txt
+# Covariate file with SNP to condition on. This is created by `format_phenotypes.R`
+COV=${DIR}/phenotypes/covariates.txt
 
-# Output foler
+# Output folder
 OUT=${DIR}/output
 mkdir $OUT -p
 
 # Run the script
-echo "Running GWAS analysis\n"
 srun python $MTMM \
---phenotype ${FILES[$SLURM_ARRAY_TASK_ID]} \
+--phenotype ${DIR}/phenotypes/necrosis.csv \
 --genotype $GENO \
 --covariates $COV \
 --maf 0.03 \

@@ -2,7 +2,7 @@
 
 # SLURM
 #SBATCH --mem=40GB
-#SBATCH --output=./05_supplementary_figures/replicate_dataset/log
+#SBATCH --output=./04_analyses/04_replicate_dataset/log
 #SBATCH --qos=medium
 #SBATCH --time=5:00:00
 
@@ -16,9 +16,9 @@ conda activate limix
 export PYTHONPATH=$PYTHONPATH:./02_library/
 
 # DATA #
-branch=replicate_dataset # don't forget to change the log destination as well!
+branch=04_replicate_dataset # don't forget to change the log destination as well!
 GENO=./01_data/1001_SNP_MATRIX
-DIR=./05_supplementary_figures/${branch}
+DIR=./04_analyses/${branch}
 # Mapping script
 MTMM=./02_library/multitrait.py
 
