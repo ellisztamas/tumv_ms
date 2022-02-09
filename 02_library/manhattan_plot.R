@@ -1,3 +1,30 @@
+#' X-axis for a Manhattan plot
+#' 
+#' Convert columns of chromosome labels and SNP positions into a single vector
+#' that can be used as an x-axis on a plot.
+#' 
+#' @inheritParams manhattan_plot
+#' 
+#' @return The input dataframe, with an additional column added, showing the 
+#' cumulative SNP position over each chromosome.
+#' @author Tom Ellis from code by Daniel Roeffs
+add_base_pair_positions <- function(gwas_data){
+  # Get the maximum base-pair position on each chromosome
+  data_cum <- gwas_data %>% 
+    group_by(chr) %>% 
+    summarise(max_bp = max(pos), .groups = "drop_last") %>% 
+    mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>% 
+    dplyr::select(chr, bp_add)
+  # Cumulative bp position for each SNP along the whole chromosome
+  gwas_data <- gwas_data %>% 
+    inner_join(data_cum, by = "chr") %>% 
+    mutate(bp_cum = pos + bp_add)
+  
+  gwas_data
+}
+
+
+
 #' Manhattan plot from Limix output
 #' 
 #' Create a Manhattan plot from the output of one of Pieter Clauw's scripts to 
@@ -16,10 +43,13 @@
 #' SNPs. Markers with larger p-values are randomly subsampled.
 #' @fraction_to_keep Float between 0 and 1 giving the proportion of 'weak' SNPs
 #' to subsample
+#' @chr_colours Vector with two elements giving colours for the chromosomes.
+#' Chromosomes colours are alternated between these. Defaults to two shades of
+#' blue.
 #' @return A ggplot2 object.
 #' @author Tom Ellis from code by Daniel Roeffs
 
-manhattan_plot <- function(gwas_data, signif_cutoff = 0.05, fraction_to_keep = 0.1){
+manhattan_plot <- function(gwas_data, signif_cutoff = 0.05, fraction_to_keep = 0.1, chr_colours = c("#183059", "#276FBF")){
   library(dplyr)
   library(ggplot2)
   library(ggtext)
@@ -36,22 +66,14 @@ manhattan_plot <- function(gwas_data, signif_cutoff = 0.05, fraction_to_keep = 0
     sample_frac(fraction_to_keep)#, weight = -log10(pvalue))
   gwas_data <- bind_rows(sig_data, notsig_data)
   
-  # Get the maximum base-pair position on each chromosome
-  data_cum <- gwas_data %>% 
-    group_by(chr) %>% 
-    summarise(max_bp = max(pos)) %>% 
-    mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>% 
-    dplyr::select(chr, bp_add)
-  # Cumulative bp position for each SNP along the whole chromosome
-  gwas_data <- gwas_data %>% 
-    inner_join(data_cum, by = "chr") %>% 
-    mutate(bp_cum = pos + bp_add)
+  # Add column for the x-axis
+  gwas_data <- add_base_pair_positions(gwas_data)
   
   # Parameters for plotting
   # First, centres for each chromosome
   axis_set <- gwas_data %>% 
     group_by(chr) %>% 
-    summarize(center = mean(bp_cum))
+    summarize(center = mean(bp_cum), .groups = "drop_last")
   # Manually set the limit for the y-axis
   ylim <- gwas_data %>% 
     filter(pvalue == min(pvalue)) %>% 
@@ -61,13 +83,14 @@ manhattan_plot <- function(gwas_data, signif_cutoff = 0.05, fraction_to_keep = 0
   # Make the plot
   manhplot <- ggplot(
     gwas_data,
-    aes(x = bp_cum, y = -log10(pvalue), color = as_factor(chr), size = -log10(pvalue))) +
+    aes(x = bp_cum, y = -log10(pvalue), color = as_factor(chr), 
+        # size = -log10(pvalue)
+        )) +
     geom_hline(yintercept = -log10(sig), color = "grey40", linetype = "dashed") + 
     geom_point(alpha = 0.75) +
     scale_x_continuous(label = axis_set$chr, breaks = axis_set$center) +
-    scale_color_brewer(palette = "Set1")+
-    # scale_y_continuous(expand = c(0,0), limits = c(0, ylim)) +
-    # scale_color_manual(values = rep(c("#276FBF", "#183059"), unique(length(axis_set$chr)))) +
+      # scale_color_brewer(palette = "Set1")+
+    scale_color_manual(values = rep(chr_colours, unique(length(axis_set$chr)))) +
     scale_size_continuous(range = c(0.5,3)) +
     labs(
       x = "Chromosome", 

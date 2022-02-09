@@ -5,45 +5,49 @@ library(reshape2)
 
 source("03_scripts/1001genomes_data.R")
 
-# Get upper triangle of the correlation matrix
-get_upper_tri <- function(cormat){
-  cormat[lower.tri(cormat, diag = TRUE)]<- NA
-  return(cormat)
-}
+# List of correlations between traits for the same virus, and between viruses
+cor_matrices <- list(
+  # Cor matrix between traits for the ancestral virus
+  anc = g1001 %>% 
+    dplyr::select( grep("Anc", names(.)) ) %>% 
+    cor(method = 's') %>% 
+    matrix(nrow = 4),
+  # Cor matrix between traits for the evolved virus
+  evo = g1001 %>% 
+    dplyr::select( grep("Evo", names(.)) ) %>% 
+    cor(method = 's') %>% 
+    matrix(nrow = 4),
+  # Vector of correlations of each trait *between viruses
+  between = mapply(function(x,y) cor(g1001[[ x ]] , g1001[[ y ]], method ='s'),
+                   grep("Anc", names(g1001), value = TRUE),
+                   grep("Evo", names(g1001), value = TRUE)
+  )
+)
+# Make a single matrix to hold all the values.
+# Start by making a copy of the ancestral correlations
+cor_matrix <- cor_matrices$anc
+# Insert correlations for the evolved virus into the top of this matrix
+cor_matrix[lower.tri(cor_matrix)] <- cor_matrices$evo[lower.tri(cor_matrices$evo)]
+# Insert correlations between viruses into the diagonal
+diag(cor_matrix) <- cor_matrices$between
+# Add the trait names to rows and columns
+row.names(cor_matrix) <- c("AUDPS", "Infectivity", "Symptoms", "Necrosis")
+colnames(cor_matrix) <- row.names(cor_matrix)
 
-cor_matrix <- g1001 %>%
-  # Create an upper triangular correlation matrix for all combinations of phenotypes
-  dplyr::select(
-    AUDPS_Anc_21, AUDPS_Evo_21,
-    Infectivity_Anc_21, Infectivity_Evo_21, 
-    SYM_Anc, SYM_Evo,
-    Necrosis_Anc, Necrosis_Evo
-  ) %>% 
-  rename(
-    `AUDPS Anc` = AUDPS_Anc_21,
-    `AUDPS Evo` = AUDPS_Evo_21,
-    `Infectivity Anc` = Infectivity_Anc_21,
-    `Infectivity Evo` = Infectivity_Evo_21,
-    `Symptoms Anc` = SYM_Anc,
-    `Symptoms Evo` = SYM_Evo,
-    `Necrosis Anc` = Necrosis_Anc,
-    `Necrosis Evo` = Necrosis_Evo,
-  ) %>% 
-  # Make an (upper) correlation matrix, and turn that into a long-form dataframe
-  cor(method = 's') %>% 
-  get_upper_tri() %>% 
+# Plot the correlation matrix
+plot_cor_matrix <- cor_matrix %>% 
   melt(na.rm = TRUE) %>% 
+  mutate(fontface = ifelse(Var1 == Var2, 'bold', 'plain')) %>% 
   # Create a plot object for the matrix.
   ggplot(aes(Var1, Var2, fill=value)) +
   geom_tile(colour="white") +
-  geom_text(aes(Var1, Var2, label = round(value,2)), color = "black", size = 3) +
+  geom_text(aes(Var1, Var2, label = round(value,2), fontface = fontface), color = "black", size = 3) +
   scale_fill_gradient2(
-    low = "blue", high = "red", mid = "white", 
+    low = "red", high = "red", mid = "white", 
     midpoint = 0, limit = c(-1,1), space = "Lab", 
     name="Spearman\nCorrelation") +
   theme_minimal()+ 
-  coord_fixed() +
-  theme(
+  coord_fixed() + theme(
     legend.position="none",
     axis.title = element_blank(),
     axis.text.x = element_text( angle = 45, vjust = 1, hjust = 1)
