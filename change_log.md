@@ -1,5 +1,29 @@
 # A major virus-resistance association in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
+# 0.12 Updated supplementary figures
+
+Changed script on SNP heritability to use the kinship matrix with only 1135, and
+to remove the joint effects of kinship and major SNP.
+Moved the plot for this from figure 2 to the supp figures.
+
+Moved the code to plot LD between SNPs to the supp figures from relative_risk.R.
+
+Fixed paths to GWAS files in supp figures.
+
+## 0.11 Figures 1 and 2
+
+Repeated figures 1 and 2.
+
+Fig 1 now shows the phenotype scale, a correlation matrix and phenotype
+differences. The cor matrix is much smaller, and gives correlations within virus
+and between viruses.
+
+Fig 2 now gives G and GxE results with an without the top snp as a covariate,
+followed by a plot of effect sizes for 10 SNPs.
+
+For the supplementary I need SNP heritability, a table of small loci and linkage 
+matrix
+
 ## 0.10 Split up analyses from figures
 
 I have new results that suggest I need to move what were supplementary results 

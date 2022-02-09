@@ -64,20 +64,20 @@ variance_components <- function(trait){
     random= ~ vs(code, Gu = K),
     rcov=~units,
     data=g1001,verbose = FALSE)
-  # Regress phenotypes on kinship matrix plus the genotype at the top SNP
-  m2 <- mmer(
-    formula( paste(trait, " ~ cohort")),
-    random=~ vs(genotype) + vs(code, Gu = K),
-    rcov=~units,
-    data=g1001,verbose = FALSE)
+  # # Regress phenotypes on kinship matrix plus the genotype at the top SNP
+  # m2 <- mmer(
+  #   formula( paste(trait, " ~ cohort")),
+  #   random=~ vs(genotype) + vs(code, Gu = K),
+  #   rcov=~units,
+  #   data=g1001,verbose = FALSE)
   # Create a dataframe showing variance explained for each component
   cbind(
     trait = trait,
-    component = c('h2_full', 'geno', 'h2_partial'),
+    component = c('h2_full'),
     rbind(
-      vpredict(m1, h2_full   ~ (V1) / ( V1+V2) ),
-      vpredict(m2, geno ~ (V1) / ( V1+V2+V3) ),
-      vpredict(m2, h2_mixed   ~ (V2) / ( V1+V2+V3) )
+      vpredict(m1, h2_full   ~ (V1) / ( V1+V2) )
+      # vpredict(m2, geno ~ (V1) / ( V1+V2+V3) ),
+      # vpredict(m2, h2_mixed   ~ (V2) / ( V1+V2+V3) )
     )
   )
 }

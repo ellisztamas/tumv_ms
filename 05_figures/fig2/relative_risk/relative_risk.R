@@ -82,38 +82,3 @@ relrisk <- list(
   )
 
 
-snp_effects %>% 
-  mutate(
-    prev = G1_N1 / (G1_N1 + G0_N1)
-  )
-
-
-# Get upper triangle of the correlation matrix
-get_upper_tri <- function(cormat){
-  cormat[lower.tri(cormat, diag = TRUE)]<- NA
-  return(cormat)
-}
-
-cor(g1001[, snp_names], method = 's') %>%
-  get_upper_tri() %>%
-  reshape2::melt(na.rm = TRUE) %>%
-  ggplot(aes(Var1, Var2, fill=value)) +
-  geom_tile(colour="white") +
-  geom_text(aes(Var1, Var2, label = round(value,2)), color = "black", size = 3) +
-  scale_fill_gradient2(
-    low = "blue", high = "red", mid = "white",
-    midpoint = 0, limit = c(-1,1), space = "Lab",
-    name="Spearman\nCorrelation") +
-  theme_minimal()+
-  coord_fixed() +
-  theme(
-    legend.position="none",
-    axis.title = element_blank(),
-    axis.text.x = element_text( angle = 45, vjust = 1, hjust = 1)
-  ) +
-  labs(
-    x = "",
-    y = ""
-  )
-
-
