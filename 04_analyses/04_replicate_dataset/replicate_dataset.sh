@@ -33,5 +33,5 @@ mkdir -p $OUT
 srun python $MTMM \
 --phenotype ${DIR}/phenotypes/binary_necrosis.csv \
 --genotype $GENO \
---maf 0.1 \
+--maf 0.03 \
 --outDir $OUT \

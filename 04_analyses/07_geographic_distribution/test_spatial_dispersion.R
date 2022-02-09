@@ -10,6 +10,12 @@ library('tidyverse')
 library("geosphere")
 
 source('03_scripts/1001genomes_data.R')
+# Add a column for genotype at the top SNP
+g1001 <- g1001 %>% 
+  left_join(
+    read_csv("01_data/top_snp.csv", col_types = "ci"),
+    by = 'code'
+  )
 
 # Matrix of pairwise distances between all accessions.
 dmat <- g1001 %>% 
@@ -24,7 +30,7 @@ ix <- (g1001$Necrosis_Anc == 1) | (g1001$Necrosis_Evo == 1)
 dvec <- dmat[ix, ix]
 obs$phenotype <- median(dvec[upper.tri(dvec)], na.rm = TRUE)
 # Median pariwise distance between accessions with the susceptible allele
-ix <- g1001$genotype == 1
+ix <- g1001$geno == 1
 dvec <- dmat[ix, ix]
 obs$genotype <- median(dvec[upper.tri(dvec)])
 
@@ -48,7 +54,7 @@ for(r in 1:nreps){
 for(r in 1:nreps){
   ix <- sample(
     1:1050,
-    size = sum(g1001$genotype == 1),
+    size = sum(g1001$geno == 1),
     replace = FALSE)
   dvec <- dmat[ix, ix]
   dvec <- dvec[upper.tri(dvec)]
@@ -57,7 +63,7 @@ for(r in 1:nreps){
 
 # Two-tailed p-values for whether observed values are less than would be expected by chance.
 2 * mean(obs$phenotype > subsamples$phenotype)
-2 * mean(obs$genotype > subsamples$genotype)
+2 * mean(obs$genotype < subsamples$genotype)
 
 # As a graphical confirmation, plot histogram of the distances between all 
 # accessions with orange and purple vertical lines showing median distances 
@@ -80,5 +86,5 @@ hist(
 segments(obs$phenotype, 90000, obs$phenotype, 0, col = "purple", lwd = 2)
 segments(obs$genotype,  90000, obs$genotype,  0, col = "orange", lwd = 2)
 legend("topright", c("Susceptible alleles", "Necrotic accessions"),
-       col = c('purple', "orange"),
+       col = c('orange', "purple"),
        bty="n", pch =16)
