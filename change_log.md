@@ -32,7 +32,7 @@ organised by main and supplementary figures (with folders `04_main_figures` and
 `05_supplementary_figures`), to splitting code to run all the analyses from code
  to create figures.
 
-I created `03_scripts/ top_snp.py` to create a datafile for the genotypes at
+I created `03_data_preparation/ top_snp.py` to create a datafile for the genotypes at
 Chr2:5927469 in `01_data`. To do this, I also added `02_library/snp_2_hdf5.py`
 as a library function to do this.
 
@@ -130,7 +130,7 @@ Here is the structure I am aiming for
 
 01_data
 02_library
-03_scripts
+03_data_preparation
 04_main_figures
     - 01_disease_phenotypes
     - 02_multitrait_GWA

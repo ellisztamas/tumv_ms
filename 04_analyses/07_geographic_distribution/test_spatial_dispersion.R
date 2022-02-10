@@ -9,7 +9,7 @@
 library('tidyverse')
 library("geosphere")
 
-source('03_scripts/1001genomes_data.R')
+source('03_data_preparation/1001genomes_data.R')
 # Add a column for genotype at the top SNP
 g1001 <- g1001 %>% 
   left_join(

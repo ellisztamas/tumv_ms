@@ -6,7 +6,7 @@ library('ggplot2')
 library("maps")
 library("mapdata")
 
-source('03_scripts/1001genomes_data.R')
+source('03_data_preparation/1001genomes_data.R')
 
 world <- map_data('world')  
 

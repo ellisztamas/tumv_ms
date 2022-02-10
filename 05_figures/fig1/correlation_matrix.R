@@ -3,7 +3,7 @@
 library(tidyverse)
 library(reshape2)
 
-source("03_scripts/1001genomes_data.R")
+source("03_data_preparation/1001genomes_data.R")
 
 # List of correlations between traits for the same virus, and between viruses
 cor_matrices <- list(

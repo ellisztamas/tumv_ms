@@ -23,7 +23,7 @@ DIR=./04_analyses/${branch}
 MTMM=./02_library/multitrait_with_covariate.py
 
 # Get the genotype at the most stongly associated SNP
-python 03_scripts/top_snp.py
+python 03_data_preparation/top_snp.py
 # format phenotypes
 Rscript ${DIR}/format_phenotypes.R
 FILES=(${DIR}/phenotypes/*.csv)

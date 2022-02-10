@@ -129,7 +129,7 @@ ggpubr::ggarrange(
 (ref:ld-matrix) Linkage disequilibrium between SNPs associated with necrosis.
 
 ```{r, fig.cap="(ref:ld-matrix)", fig.width=16.9/2.54, fig.height=20/2.54}
-source("03_scripts/1001genomes_data.R")
+source("03_data_preparation/1001genomes_data.R")
 g1001 <- g1001 %>% 
   left_join(
     read_csv("05_figures/fig2/relative_risk/output/snp_matrix.csv", col_types = 'ciiiiiiiiiiiii'),

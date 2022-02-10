@@ -17,7 +17,7 @@ use_condaenv('limix', required=TRUE)
 
 ```{r import phenotypes}
 # Import phenotype data
-source("03_scripts/1001genomes_data.R")
+source("03_data_preparation/1001genomes_data.R")
 # Add a column giving cohort as a factor
 g1001 <- g1001 %>% 
   left_join(

@@ -31,7 +31,7 @@ top_snps <- read_csv("05_figures/fig2/relative_risk/output/top_gwas_results.csv"
 #   geom_line()
 
 # Import phenotype data and bind to genotype data.
-source("03_scripts/1001genomes_data.R")
+source("03_data_preparation/1001genomes_data.R")
 g1001 <- g1001 %>% 
   left_join(
     read_csv("05_figures/fig2/relative_risk/output/snp_matrix.csv") %>% 
