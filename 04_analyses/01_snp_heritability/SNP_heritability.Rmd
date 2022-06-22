@@ -39,10 +39,19 @@ kin_hdf = h5py.File(kinFile, 'r')
 # select kinship only for phenotyped and genotyped accessions
 # Accession names first need converting to byte format to be compatible with HDF5 files
 bcodes = r.g1001['code'].map(lambda x: str(x).encode('UTF8'))
+# This should change the order, but check
+assert all(bcodes == [bytes(x, 'UTF-8') for x in r.g1001['code']])
+
+# Subset the kinship matrix
 acn_indices = [np.where(kin_hdf['accessions'][:] == acn)[0][0] for acn in bcodes]
 acn_indices.sort()
 K = kin_hdf['kinship'][acn_indices, :][:, acn_indices]
 kin_hdf.close()
+```
+
+
+```{python}
+
 
 ```
 

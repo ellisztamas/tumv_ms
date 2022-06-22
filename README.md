@@ -92,7 +92,7 @@ This project uses R 4.0.3 with the following packages:
 - `reshape2`
 - `maps` and `mapsdata`
 - `geosphere` 
-- `patchwork`
+- `knitr`
 
 Full package versions are given in `session_info.txt` (this is the output of `devtools::session_info()`).
 

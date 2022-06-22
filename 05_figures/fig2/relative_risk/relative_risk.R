@@ -58,10 +58,6 @@ snp_effects <- rbind(
     snp = factor(snp, levels =unique(.$snp) ),
   )
 
-snp_effects %>% 
-  arrange(log_rr) %>% 
-  select(g1001,snp, G0_N0, G0_N1, G1_N0, G1_N1, freq, risk_G0, risk_G1, rel_risk, log_rr)
-
 # Plot log relative risk
 relrisk <- list(
   common = snp_effects %>%

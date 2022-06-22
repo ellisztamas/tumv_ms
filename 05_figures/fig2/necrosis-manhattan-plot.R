@@ -81,8 +81,6 @@ manh <- mapply(
   SIMPLIFY = FALSE
 )
 
-manh$conditional_GxE
-
 
 # qq <- gwas_qqplot(limix_necrosis)
 # # Inset the QQ plot in the MH plot
