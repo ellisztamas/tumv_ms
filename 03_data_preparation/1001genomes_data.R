@@ -14,21 +14,4 @@ g1001 <- read_csv(
   right_join(
     read_csv("01_data/phenotypes_1050_accessions.csv", col_types = "cddddiiii"),
     by='code'
-  ) #%>%
-  # Data for the top SNP
-  # left_join(
-  #   read_csv("01_data/top_snp.csv", col_types = "ci"),
-  #   by='code'
-  # ) %>% 
-  # # New column showing who is necrotic or not.
-  # mutate(
-  #   Phenotype = ifelse(Necrosis_Anc == 1 | Necrosis_Evo == 1, "Necrotic", "Alive"),
-  #   Genotype = ifelse(genotype == 0, "Resistant", "Susceptible"),
-  #   # type = factor(paste(Phenotype, Genotype, sep="/"),
-  #   #               levels = c(
-  #   #                 "Alive/Resistant",
-  #   #                 "Alive/Susceptible",
-  #   #                 "Necrotic/Resistant",  
-  #   #                 "Necrotic/Susceptible"
-  #   #               ))
-  # )
+  )

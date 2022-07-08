@@ -80,14 +80,3 @@ manh <- mapply(
   palette = palette, 
   SIMPLIFY = FALSE
 )
-
-
-# qq <- gwas_qqplot(limix_necrosis)
-# # Inset the QQ plot in the MH plot
-# necrosis_manh <- manh_necrosis +
-#   annotation_custom(
-#     ggplotGrob(qq),
-#     xmin = 119144518 / 2,
-#     xmax = 119144518,
-#     ymin = 8, ymax = 20
-#   )

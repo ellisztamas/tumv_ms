@@ -1,5 +1,22 @@
 # A major virus-resistance association in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
+# 0.13 Overdispersion vs allele at the same frequency
+
+I need to compare distances between accessions with similar allele frequencies.
+
+`04_analyses/07_geographic_distribution/distance_matrix.R` creates and saves a
+matrix of all pairwise distances between all 1135 accessions.
+
+`04_analyses/07_geographic_distribution/distance_by_MAC.py`:
+- Import the whole SNP matrix, and filter for those with a sufficient minor 
+    allele count to estimate median distances, between 10 and 200 (roughly
+    0.01 to 0.2 global allele frequency)
+- Take a subsample of 10000 of those loci, and store who has the minor allele at
+    each
+- For each locus, subset the geographic distance matrix for the accessions 
+    showing the minor allele
+- Calculate mean distance between them
+
 # 0.12 Updated supplementary figures
 
 Changed script on SNP heritability to use the kinship matrix with only 1135, and

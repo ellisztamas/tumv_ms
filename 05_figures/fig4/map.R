@@ -72,7 +72,9 @@ g <- g1001 %>%
     .groups = "drop"
   ) %>%
   pivot_wider(names_from = Phenotype, values_from = n) %>% 
-  tableGrob(rows=NULL, theme = ttheme_minimal())
+  dplyr::select(Alive, Necrotic) %>% 
+  tableGrob(
+    rows=c("Resistant", "Susceptible"), cols = c("Alive", "Necrotic"), theme = ttheme_minimal())
 
 # Solution for how to colour individual cells in the table from Stack Overflow
 # https://stackoverflow.com/a/39313912
@@ -86,3 +88,4 @@ g$grobs[find_cell(g, 2, 3, "core-bg")][[1]][["gp"]] <- grid::gpar(fill="#34a853"
 g$grobs[find_cell(g, 3, 3, "core-bg")][[1]][["gp"]] <- grid::gpar(fill="#ea4335")
 
 map_plot <- map_plot + draw_grob(g, hjust = 70, vjust = -60 )
+map_plot

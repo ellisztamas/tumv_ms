@@ -10,8 +10,8 @@ source("05_figures/fig4/map.R")
 # This gets the PNG device to work on RStudio server
 options(bitmapType='cairo')
 
-dist_plots <- plot_grid(plot_maf, plot_am_dists, plot_snp_dists,
-                        ncol=3, labels = c("B", "C", "D"))
+dist_plots <- plot_grid(plot_maf, mac_by_distance,
+                        ncol=2, labels = c("B", "C"))
 
 
 png(
