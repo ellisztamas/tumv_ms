@@ -24,7 +24,9 @@ snp_heritability <- h2 %>%
   theme_bw() +
   theme(
     axis.title.x = element_blank(),
-    legend.position = "top"
+    axis.text.x = element_text(angle = 45, hjust=1),
+    legend.position = "top",
+    legend.title = element_blank()
   ) +
   lims(
     y = c(0,0.6)

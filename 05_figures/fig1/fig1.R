@@ -12,28 +12,31 @@ options(bitmapType='cairo')
 symptoms <- ggdraw() +
   draw_image("05_figures/fig1/Symptoms_scale_new.png")
 
-p1 <- plot_grid(
-  symptoms, snp_heritability, plot_cor_matrix, 
-  nrow = 3,
-  rel_heights = c(1,2,2),
-  # rel_widths = c(1,2),
-  labels = LETTERS[1:3]
+plot_misc_phenotype_stuff <- plot_grid(
+  symptoms, plot_cor_matrix, snp_heritability,
+  labels = LETTERS[1:3], ncol=3
 )
 
+plot_phenotypes_by_virus <-ggpubr::ggarrange(
+  plotlist = phenotypes_by_virus,
+  labels = LETTERS[4:8],
+  nrow = 1, ncol=4
+)
 
-p2 <-ggpubr::ggarrange(
-  phenotype_diffs$audps,
-  phenotype_diffs$infectivity,
-  phenotype_diffs$sym,
-  phenotype_diffs$necrosis,
-  labels = LETTERS[4:7]
+plot_phenotype_diffs <-ggpubr::ggarrange(
+  plotlist = phenotype_diffs,
+  labels = LETTERS[9:12],
+  nrow = 1, ncol=4
   )
 
-png(
-  filename = "05_figures/fig1/fig1.png",
-  width = 18, height = 18, units='cm', res = 300
-)
+plot_grid(
+  plot_misc_phenotype_stuff, plot_phenotypes_by_virus, plot_phenotype_diffs,
+  nrow = 3, rel_heights = c(3,2,2)
+  )
 
-plot_grid(p1, p2, ncol = 2)
 
-dev.off()
+ggsave(
+  filename = '05_figures/fig1/fig1.png',
+  device = 'png',
+  height = 16, width=16.9, units = "cm"
+  )
