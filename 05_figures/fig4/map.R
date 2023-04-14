@@ -12,18 +12,20 @@ world <- map_data('world')
 
 # Reorder factors so that "Alive/Resistant" comes last.
 # Necessary so that other factors can be overplotted
-g1001 <- g1001 %>% 
+g1001 <- g1001 %>%
   left_join(
     read_csv("01_data/top_snp.csv", col_types = 'ci'),
     by = 'code'
   ) %>% 
   mutate(
     Phenotype = ifelse( Necrosis_Anc | Necrosis_Evo, "Necrotic", "Alive"),
-    Genotype = ifelse( geno == 1, "Susceptible", "Resistant"),
-    type = paste(Phenotype, Genotype, sep = "/"),
-    type = fct_relevel(type, "Alive/Resistant", after = Inf)
-    )
-
+    Genotype = ifelse( geno == 1, "Minor", "Major"),
+    type = as.factor(
+      paste(Phenotype, Genotype, sep = "/")
+      ),
+    # type = fct_relevel(type, "Alive/Minor", after = Inf)
+    ) 
+levels(g1001$type)
 map_plot <- ggplot() +
   # Plot an empty map of the world
   # Borders are shown the same colour as the country backgrounds
@@ -41,7 +43,7 @@ map_plot <- ggplot() +
     data = g1001,
     aes(x=Long, y = Lat, colour = type)) +
   geom_point(
-    data = g1001 %>% filter(type != "Alive/Resistant"),
+    data = g1001 %>% filter(type != "Alive/Major"),
     aes(x = Long, y = Lat, colour=type)
     ) + 
   # Make it look nice
@@ -61,7 +63,7 @@ map_plot <- ggplot() +
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
     ) +
-  scale_color_manual(values = c("#4285f4", "#34a853", "#ea4335", "gray70"))
+  scale_color_manual(values = c("gray70", "#4285f4", "#34a853", "#ea4335"))
 
 
 # Add the contingency table 
@@ -74,7 +76,7 @@ g <- g1001 %>%
   pivot_wider(names_from = Phenotype, values_from = n) %>% 
   dplyr::select(Alive, Necrotic) %>% 
   tableGrob(
-    rows=c("Resistant", "Susceptible"), cols = c("Alive", "Necrotic"), theme = ttheme_minimal())
+    rows=c("Major", "Minor"), cols = c("Alive", "Necrotic"), theme = ttheme_minimal())
 
 # Solution for how to colour individual cells in the table from Stack Overflow
 # https://stackoverflow.com/a/39313912
@@ -88,4 +90,3 @@ g$grobs[find_cell(g, 2, 3, "core-bg")][[1]][["gp"]] <- grid::gpar(fill="#34a853"
 g$grobs[find_cell(g, 3, 3, "core-bg")][[1]][["gp"]] <- grid::gpar(fill="#ea4335")
 
 map_plot <- map_plot + draw_grob(g, hjust = 70, vjust = -60 )
-map_plot

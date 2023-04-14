@@ -36,7 +36,7 @@ plot_grid(
 
 
 ggsave(
-  filename = '05_figures/fig1/fig1.png',
-  device = 'png',
+  filename = '05_figures/fig1/fig1.pdf',
+  device = 'pdf',
   height = 16, width=16.9, units = "cm"
   )
