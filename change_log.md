@@ -1,5 +1,24 @@
 # A major virus-resistance association in *Arabidopsis thaliana* is consistent with frequency-depednent selection
 
+## Symptoms in figure 2
+
+14th April 2023
+
+Rejigged figure 2 to show G and GxE for symptoms and necrosis, plus phenotypes
+for the minor alleles, mutants, and TE inserts.
+
+Repeated conditional GWAS for all phenotypes, but moved results to the SI
+Merged G and GxE GWAS results for AUDPS and infectivity in the SI.
+Reordered stuff in the SI to match the order of the text.
+
+May or may not have messed up removing the relative risk stuff from fig2.
+
+## Added phenotype differences
+
+12th April 2023
+
+Edited figure 1 to show differences between phenotype for each line
+
 ## 0.9 edits to figure 4
 
 Changed fig 4 to be just a made with a table.

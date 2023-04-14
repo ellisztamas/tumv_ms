@@ -50,12 +50,6 @@ kin_hdf.close()
 ```
 
 
-```{python}
-
-
-```
-
-
 ```{r}
 # Convert the Python K matrix into an R object
 K <- py$K

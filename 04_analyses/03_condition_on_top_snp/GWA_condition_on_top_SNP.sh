@@ -4,7 +4,8 @@
 #SBATCH --mem=40GB
 #SBATCH --output=./04_analyses/03_condition_on_top_snp/log
 #SBATCH --qos=medium
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
+#SBATCH --array=0-3
 
 # ENVIRONMENT #
 module load build-env/2020
@@ -36,7 +37,7 @@ mkdir $OUT -p
 
 # Run the script
 srun python $MTMM \
---phenotype ${DIR}/phenotypes/necrosis.csv \
+--phenotype ${FILES[$SLURM_ARRAY_TASK_ID]} \
 --genotype $GENO \
 --covariates $COV \
 --maf 0.03 \

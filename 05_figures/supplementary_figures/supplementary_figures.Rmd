@@ -34,12 +34,12 @@ suppressPackageStartupMessages(library(tidyverse))
 source("02_library/manhattan_plot.R")
 ```
 
-(ref:necrosis-snps) Loci associated with necrosis, showing whether the association was with the ‘common’ response to both viruses, or with a virus-specific response.
+<!-- (ref:necrosis-snps) Loci associated with necrosis, showing whether the association was with the ‘common’ response to both viruses, or with a virus-specific response. -->
 
-```{r necrosis-snps}
-read_csv("05_figures/supplementary_figures/supplementary_table_1.csv") %>% 
-  knitr::kable(caption = "(ref:necrosis-snps)")
-```
+<!-- ```{r necrosis-snps} -->
+<!-- read_csv("05_figures/supplementary_figures/supplementary_table_1.csv") %>%  -->
+<!--   knitr::kable(caption = "(ref:necrosis-snps)") -->
+<!-- ``` -->
 
 <!-- (ref:snp-heritability) SNP heritability in response to each virus. -->
 
@@ -92,45 +92,57 @@ read_csv(
 
 ```
 
+(ref:conditional-GWA) Manhattan plots for associations with severity and symptoms and necrosis in a model conditioned on the most strongly associated SNP (Chr2:5927469).
 
-(ref:g-manh) Manhattan plots for associations with common disease responses to both viruses.
+```{r conditional-GWA, fig.cap="(ref:conditional-GWA)", fig.width=16.9/2.54, fig.height=15/2.54}
+gwa_filenames <- c(
+  "04_analyses/03_condition_on_top_snp/output/SYM_Anc_SYM_Evo_0.03_MTMM_G.csv",
+  "04_analyses/03_condition_on_top_snp/output/SYM_Anc_SYM_Evo_0.03_MTMM_GxE.csv",
+  "04_analyses/03_condition_on_top_snp/output/Necrosis_Evo_Necrosis_Anc_0.03_MTMM_G.csv",
+  "04_analyses/03_condition_on_top_snp/output/Necrosis_Evo_Necrosis_Anc_0.03_MTMM_GxE.csv"
+)
+gwa_results <- lapply(gwa_filenames, read_csv, col_types = 'ciddid')
+names(gwa_results) <- c("symptoms_G", "symptoms_GxE", "necrosis_G", "necrosis_GxE")
 
-```{r g-manh, fig.cap="(ref:g-manh)", fig.height=20/2.54}
-# Import files for G results
-limix_path <- "04_analyses/02_multitrait_GWA/output/"
-limix_files <- list.files(limix_path, "^[ASI].*G.csv")
-limix_files <-paste(limix_path, limix_files, sep ="")
+# For each GWA file add x-axis positions and filter only the significant results
+signif_snps <- lapply(gwa_results, function(x){
+  x %>% 
+    add_base_pair_positions(.) %>% 
+    mutate(log10p = -log10(pvalue)) %>% 
+    filter( log10p > -log10(0.05 / nrow(.)) ) 
+})
 
-limix_G <- lapply(limix_files, read_csv, col_types = 'ciddid')
-names(limix_G) <- c("audps", "inf", "sym")
-
-ggpubr::ggarrange(
-  manhattan_plot(limix_G$audps) + ggtitle("AUDPS"),
-  manhattan_plot(limix_G$inf)   + ggtitle("Infectivity"),
-  manhattan_plot(limix_G$sym)   + ggtitle("Severity of symptoms"),
-  nrow=3, ncol= 1, labels = "AUTO"
+# Base Manhattan plots
+manh <- lapply(gwa_results, manhattan_plot,
+               fraction_to_keep = 0.05, signif_cutoff = 0.05 , chr_colours = c('gray80', 'gray60')
+)
+# Label significant SNPs in red
+manh_plus_signif <- list(
+  manh$symptoms_G +
+    geom_point(
+      data = signif_snps$symptoms_G, inherit.aes = TRUE, colour = 'red'
+    )+
+    ggtitle("Severity of symptoms", "Common effects"),
+  manh$necrosis_G +
+    geom_point(
+      data = signif_snps$necrosis_G, inherit.aes = TRUE, colour = 'red'
+    ) +
+    ggtitle("Necrosis", "Common effects"),
+  manh$symptoms_GxE +
+    geom_point(
+      data = signif_snps$symptoms_GxE, inherit.aes = TRUE, colour = 'red'
+    )+
+    ggtitle("Severity of symptoms", "Virus-specific effects"),
+  manh$necrosis_GxE +
+    geom_point(
+      data = signif_snps$necrosis_GxE, inherit.aes = TRUE, colour = 'red'
+    ) +
+    ggtitle("Necrosis", "Virus-specific effects")
 )
 
-```
-
-(ref:gxe-manh) Manhattan plots for associations with disease responses specific to individual viral isolates.
-
-```{r gxe-manh, fig.cap="(ref:gxe-manh)", fig.height=20/2.54}
-
-# Import files for GxE results
-limix_path <- "04_analyses/02_multitrait_GWA/output/"
-limix_files <- list.files(limix_path, "^[ASI].*GxE.csv")
-limix_files <-paste(limix_path, limix_files, sep ="")
-
-limix_GxE <- lapply(limix_files, read_csv, col_types = 'ciddid')
-names(limix_GxE) <- c("audps", "inf", "necrosis", "sym")
-
-
-ggpubr::ggarrange(
-  manhattan_plot(limix_GxE$audps) + ggtitle("AUDPS"),
-  manhattan_plot(limix_GxE$inf) + ggtitle("Infectivity"),
-  manhattan_plot(limix_GxE$sym) + ggtitle("Severity of symptoms"),
-  nrow=3, ncol= 1, labels = "AUTO"
+ggarrange(
+  plotlist = manh_plus_signif,
+  ncol=2, nrow = 2, labels = "AUTO"
 )
 
 ```
@@ -180,6 +192,41 @@ cor(g1001[, snp_names], method = 's') %>%
 
 ```
 
+(ref:audps-infectivity-gwa) Manhattan plots for common and virus-specific associations with AUDPS and infectivity.
+
+```{r audps-infectivity-gwa, fig.cap="(ref:audps-infectivity-gwa)", fig.width=16.9/2.54, fig.height=20/2.54}
+
+gwa_filenames <- c(
+  "04_analyses/02_multitrait_GWA/output/AUDPS_Anc_21_AUDPS_Evo_21_0.03_MTMM_G.csv",
+  "04_analyses/02_multitrait_GWA/output/Infectivity_Anc_21_Infectivity_Evo_21_0.03_MTMM_G.csv",
+  "04_analyses/02_multitrait_GWA/output/AUDPS_Anc_21_AUDPS_Evo_21_0.03_MTMM_GxE.csv",
+  "04_analyses/02_multitrait_GWA/output/Infectivity_Anc_21_Infectivity_Evo_21_0.03_MTMM_GxE.csv"
+)
+gwa_results <- lapply(gwa_filenames, read_csv, col_types = 'ciddid')
+names(gwa_results) <- c("audps_G", "infectivity_G", "audps_GxE", "infectivity_GxE")
+
+# Base Manhattan plots
+manh <- lapply(gwa_results, manhattan_plot,
+               fraction_to_keep = 0.05, signif_cutoff = 0.05 , chr_colours = c('gray80', 'gray60')
+)
+# Label significant SNPs in red
+audps_inf_manh <- list(
+  manh$audps_G +
+    ggtitle("AUDPS", "Common effects"),
+  manh$infectivity_G +
+    ggtitle("Infectivity", "Common effects"),
+  manh$audps_GxE +
+    ggtitle("AUDPS", "Virus-specific effects"),
+  manh$infectivity_GxE +
+    ggtitle("Infectivity", "Virus-specific effects")
+)
+
+ggarrange(
+  plotlist = audps_inf_manh,
+  ncol=2, nrow = 2, labels = "AUTO"
+)
+
+```
 
 (ref:kruskal-wallis) Manhattan plots for the association between SNPs and necrosis using a Kruskall-Wallis test at each locus, with no correction for population structure.
 
