@@ -18,7 +18,7 @@ plot_manh <- ggarrange(
 plot_effect_sizes <- ggarrange(
   plot_phenotypes_at_major_association, plot_te_insert,
   labels = c("E", "G"),
-  nrow=2, 
+  nrow=2
 )
 
 plot_bars <- ggarrange(
@@ -33,7 +33,7 @@ ggarrange(
   )
 
 ggsave(
-  "05_figures/fig2/fig2.pdf",
-  device = "pdf",
+  "05_figures/fig2/fig2.png",
+  device = "png",
   units = "cm", height = 22, width = 16.9
 )

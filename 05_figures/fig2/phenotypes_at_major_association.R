@@ -3,7 +3,7 @@
 
 source("03_data_preparation/1001genomes_data.R")
 
-plot_phenotypes_at_major_association <- g1001 %>% 
+plot_phenotypes_at_major_association <- g1001 %>%
   left_join(
     read_csv("01_data/top_snp.csv", col_types = "cf")
   ) %>% 
@@ -39,5 +39,5 @@ plot_phenotypes_at_major_association <- g1001 %>%
   facet_grid(cols = vars(Virus)) +
   theme_bw() +
   theme(
-    legend.position = "bottom"
+    legend.position = "left"
   )

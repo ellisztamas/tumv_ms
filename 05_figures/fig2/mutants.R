@@ -6,6 +6,9 @@ plot_mutants <- mutants %>%
   filter(
     genotype %in% c("at2g14080", "at2g14120", "Col-0")
   ) %>%
+  mutate(
+    genotype = ifelse(genotype == 'at2g14120', 'drp3b', genotype)
+    ) %>% 
   group_by(genotype, Virus, Symptoms) %>% 
   summarise(
     n = n()

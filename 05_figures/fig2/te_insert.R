@@ -61,7 +61,7 @@ plot_te_insert <- pheno %>%
   scale_fill_brewer(palette = 'Dark2') +
   theme_bw() +
   theme(
-    legend.position = "bottom"
+    legend.position = "left"
   ) +
   facet_grid(cols = vars(Virus) )
 
