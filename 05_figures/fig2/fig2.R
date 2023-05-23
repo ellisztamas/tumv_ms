@@ -33,7 +33,7 @@ ggarrange(
   )
 
 ggsave(
-  "05_figures/fig2/fig2.png",
-  device = "png",
+  "05_figures/fig2/fig2.pdf",
+  device = "pdf",
   units = "cm", height = 22, width = 16.9
 )

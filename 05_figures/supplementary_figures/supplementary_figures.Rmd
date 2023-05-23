@@ -7,7 +7,6 @@ output:
     toc: no
     keep_tex: no
     number_sections: false
-    latex_engine: lualatex
   bookdown::word_document2: null
 ---
 \renewcommand{\thefigure}{S\arabic{figure}}
@@ -17,20 +16,19 @@ output:
 \renewcommand{\theequation}{S\arabic{equation}}
 \setcounter{equation}{0}
 
-This document contains supplementary figures to accompany the manuscript "A major virus-resistance association in *Arabidopsis thaliana* is consistent with negative frequency-dependent selection".
+This document contains supplementary figures to accompany the manuscript "Genetic basis of *Arabidopsis thaliana* responses to infection by naïve and adapted isolates of turnip mosaic virus" by Anamarija Butković, Thomas James Ellis, Rubén González, Benjamin Jaegle, Magnus Nordborg, and Santiago F. Elena.
 
 ```{r supp-setup, echo=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE,
   cache=TRUE, cache.lazy=TRUE,
-  fig.width=16.9/2.54, fig.height = 10/2.54, fig.align='center',
-  warning = F, message =F,
-  dev = "png"
+  warning = FALSE, message =FALSE
 )
 # This gets the PNG device to work on RStudio server
-options(bitmapType='cairo')
+# options(bitmapType='cairo')
 
 suppressPackageStartupMessages(library(tidyverse))
+library(ggpubr)
 source("02_library/manhattan_plot.R")
 ```
 
@@ -74,7 +72,7 @@ source("02_library/manhattan_plot.R")
 <!--   scale_x_discrete( -->
 <!--     labels = -->
 <!--       c("AUDPS", "Infectivity", "Necrosis", "Severity of\nsymptoms") -->
-<!--   ) + -->
+<!-- ) + -->
 <!--   theme_bw() -->
 
 

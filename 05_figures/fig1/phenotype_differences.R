@@ -55,7 +55,7 @@ phenotypes_by_virus <- list(
     ggplot(aes(x = value, colour = Virus, fill = Virus, group = Virus)) + 
     geom_bar(position = position_dodge(0.7), width= 0.5) +
     labs(
-      x = "Severity of symptoms",
+      x = "Symptoms",
       y = "Frequency"
     ) +
     theme_classic() +
@@ -100,7 +100,7 @@ phenotype_diffs <- list(
       x = "\u0394 AUDPS",
       y = "Frequency"
     ) +
-    theme_bw(),
+    theme_classic(),
 
   delta_infectivity = g1001 %>% 
     dplyr::select(code, Infectivity_Anc_21, Infectivity_Evo_21) %>% 
@@ -111,7 +111,7 @@ phenotype_diffs <- list(
       x = "\u0394 Infectivity",
       y = "Frequency"
     ) +
-    theme_bw(),
+    theme_classic(),
   
   delta_symptoms = g1001 %>% 
     mutate(
@@ -124,7 +124,7 @@ phenotype_diffs <- list(
       x = "\u0394 symptoms",
       y = "Frequency"
     ) +
-    theme_bw(),
+    theme_classic(),
   
   delta_necrosis = g1001 %>% 
     dplyr::select(code, Necrosis_Anc, Necrosis_Evo) %>% 
@@ -138,6 +138,6 @@ phenotype_diffs <- list(
     ) +
     # scale_y_continuous(trans='log10') +
     # annotation_logticks(sides='l')+
-    theme_bw()
+    theme_classic()
   
 )

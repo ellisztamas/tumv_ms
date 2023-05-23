@@ -19,13 +19,13 @@ plot_misc_phenotype_stuff <- plot_grid(
 
 plot_phenotypes_by_virus <-ggpubr::ggarrange(
   plotlist = phenotypes_by_virus,
-  labels = LETTERS[4:8],
+  labels = LETTERS[4:7],
   nrow = 1, ncol=4
 )
 
 plot_phenotype_diffs <-ggpubr::ggarrange(
   plotlist = phenotype_diffs,
-  labels = LETTERS[9:12],
+  labels = LETTERS[8:11],
   nrow = 1, ncol=4
   )
 
@@ -37,6 +37,6 @@ plot_grid(
 
 ggsave(
   filename = '05_figures/fig1/fig1.pdf',
-  device = 'pdf',
+  device=cairo_pdf ,
   height = 16, width=16.9, units = "cm"
   )
