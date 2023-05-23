@@ -1,0 +1,49 @@
+# Scripts to create figure 3
+
+Code by Benjamin Jaegle, adapted by Tom Ellis for sharing
+
+## Prerequisites
+
+### BLAST software
+
+Download `ncbi-blast-2.7.1+` from the NCBI website, and unpack it to `02_library`:
+```
+https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html
+```
+
+### TAIR 10 genome
+
+Download and the TAIR10 reference genome from:
+```
+https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGenes%2FTAIR10_genome_release%2FTAIR10_chromosome_files
+```
+
+Unpack it to 01_data. The specific file needed is `TAIR10_chr_all.fas`
+
+### Araport annotation
+
+Download the Araport 11 annotation file an unzip it to `01_data`:
+https://www.arabidopsis.org/download_files/Genes/Araport11_genome_release/Araport11_GFF3_genes_transposons.current.gff.gz
+
+Note! The Araport file will likely have the date of download as part of the file
+(e.g. `Araport11_GFF3_genes_transposons.May2023.gff`), which makes it difficult
+to keep scripts reproducible. As a workaround, delete the date manually, so the
+filename looks something like `Araport11_GFF3_genes_transposons.gff`.
+
+## Scripts
+
+There are five scripts to create the plot:
+
+- `01_extract_bed.R` looks into the Araport 11 annotation of the reference
+genome and creates a BED file for each annotated gene or feature.
+- `02_prepare_fasta.sh` finds the sequences corresponding to six genes/TEs
+on either side of AT2G14080 annotated in the reference genome.
+- `03_blast_to_pacbio.sh` prepares a BLAST database for each PacBio genome and 
+uses it to look for homology between genes/TE from the reference genome and each
+ PacBio.
+- `04_order_accessions.R`: To sanitise plotting, this creates a textfile of line
+names ordering each PacBio by how large the space between AT2G14080 and
+AT2G14120 is.
+- `05_plotting.R` This plots (A) a close-up of the peak of association with
+necrosis from figure 2 and (B) the structure of each PacBio genome around
+AT2G14080 and AT2G14120.

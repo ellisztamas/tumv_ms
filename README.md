@@ -9,7 +9,6 @@ A collaboration with Santiago Elena’s group at the University of Valencia inve
 4. [Analysis](#analysis)
 5. [Author information](#author-information)
 
-
 ## Experimental set up
 
 ### Screening
@@ -35,7 +34,7 @@ Plants were monitored for 21 days after inocculation and phenotyped for the foll
 
 ## Data files
 
-### Genotype data
+### SNP data
 
 For genome-wide associations we use the SNP matrix and kinship matrix associated with the [1001 Genomes project](https://1001genomes.org/).
 Download and extract them to `01_data/1001_SNP_MATRIX` by running the following command from the folder root:
@@ -50,21 +49,44 @@ PyGWAS requires specific file names for the input files which don't match the de
 mv 01_data/1001_SNP_MATRIX/imputed_snps_binary.hdf5 01_data/1001_SNP_MATRIX/all_chromosomes_binary.hdf5
 ```
 
+### TAIR 10 genome
+
+Download and the TAIR10 reference genome from:
+```
+https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGenes%2FTAIR10_genome_release%2FTAIR10_chromosome_files
+```
+
+Unpack it to 01_data. The specific file needed is `TAIR10_chr_all.fas`
+
+### Araport annotation
+
+Download the Araport 11 annotation file an unzip it to `01_data`:
+https://www.arabidopsis.org/download_files/Genes/Araport11_genome_release/Araport11_GFF3_genes_transposons.current.gff.gz
+
+Note! The Araport file will likely have the date of download as part of the file
+(e.g. `Araport11_GFF3_genes_transposons.May2023.gff`), which makes it difficult
+to keep scripts reproducible. As a workaround, delete the date manually, so the
+filename looks something like `Araport11_GFF3_genes_transposons.gff`.
+
 ### Phenotypes
 
-Aside from genotype files, there are six additional data files in `01_data`:
+Aside from genotype files, there are nine additional data files in `01_data`:
 
 1. `phenotypes_1050_accessions.csv`: Disease symptoms in 1050 accessions from the first screen
 2. `replicate_experiment.csv`: Disease symptoms in 118 accessions in a replicate screen.
 3. `the1001genomes_accessions.csv`: Accession information from the 1001 Genomes database.
 4. `cohort_as_dummy.txt`: Text file indicating experimental cohort as four columns of dummy variables.
 5. `cohort_as_factor.csv`: Cohort information, but as a single column.
-6. `chr2_5923326.csv`: SNP genotype of each accession at the SNP showing the strongest association with necrosis
+6. `chr2_5923326.csv`: SNP genotype of each accession at the SNP showing the 
+    strongest association with necrosis
 7. `GWAS_clean_symptoms_mutants.csv`: Necrosis phenotypes of 10 replicates each 
     for Col-0 controls, at2G14080 mutants and at2g14120 mutants in response to 
     ancestral and evolved viruses.
 8. `lines_with_TE_insert.txt`: Which accessions were identified to have a TE
     insertion in AT2G14080 by Benjamin Jaegle.
+9. `phenotypes_genotypes.csv`: A summary (to plot figure 3) of whether each line
+    showed necrosis in response to either virus, and its genotype at the most 
+    strongly associated SNP.
 
 ## Analysis
 
@@ -102,6 +124,13 @@ This project uses R 4.0.3 with the following packages:
 - `patchwork`
 
 Full package versions are given in `session_info.txt` (this is the output of `devtools::session_info()`).
+
+### BLAST software
+
+Download `ncbi-blast-2.7.1+` from the NCBI website, and unpack it to `02_library`:
+```
+https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html
+```
 
 ## Author information
 
