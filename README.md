@@ -1,6 +1,8 @@
 # TuMV resistance in *A. thaliana*
 
-A collaboration with Santiago Elena’s group at the University of Valencia investigating the genetic basis of resistance to turnip-mosaic virus in *Arabidopsis thaliana* as part of Anamarija Butkovic's PhD project.
+Code to accompany the following publication:
+
+> Butković, A., Ellis, T. J., González, R., Jaegle, B., Nordborg, M., & Elena, S. F. (2022). Genetic basis of *Arabidopsis thaliana* responses to infection by naïve and adapted isolates of turnip mosaic virus. eLife DOI: 10.7554/eLife.89749.3
 
 ## Table of contents
 
